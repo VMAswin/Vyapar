@@ -1,0 +1,1293 @@
+{% extends 'company/src/html/base.html' %}
+{% block content %}
+{% load static %}
+{% load social_share %}
+
+<!---------------------------------------------script----------------------------------------->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js" integrity="sha512-8+n4PSpp8TLHbSf28qpjRfu51IuWuJZdemtTC1EKCHsZmWi2O821UEdt6S3l4+cHyUQhU8uiAAUeVI1MUiFATA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!----------------------------------------------script--------------------------------------------->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> --> -->
+ <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script> 
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> 
+<style>
+     @media print{
+        body{
+            visibility: hidden !important; /* hide everything in body when in print mode*/
+        }
+        .printContainer {
+            visibility: visible !important; /* Override the rule above to only show the printables*/
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        } 
+    }
+    </style>
+{% load my_extras %}
+<style>
+    .bs{
+        box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
+    }
+    .bs_sm{
+        box-shadow: inset 2px 2px 5px 3px rgba(0, 0, 0, 0.199);
+    }
+    .tb{
+        color: black;
+    }
+    .tg{
+        color: rgb(0, 140, 7);
+    }
+    .tr{
+        color: rgb(218, 0, 0);
+    }
+    .btn_add{
+        background-color: orange;
+        color: black;
+    }
+    .btn_add:hover{
+        background-color: rgb(234, 152, 0);
+        color: black;
+    }
+    ::-webkit-scrollbar{
+        display: none
+    }
+    .bg-pink{
+        background-color: rgb(239, 3, 82)
+    }
+
+    
+    .heading-with-dropdown {
+        display: flex;
+        align-items: center;
+    }
+    
+    .heading-with-dropdown span {
+        margin-right: 10px; /* Adjust as needed */
+    }
+    
+</style>
+
+
+<style>
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+        }
+
+        /* .dropdown-toggle {
+        padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        }  */
+
+        .dropdown-content {
+        z-index: 1;
+        display: none;
+        position: absolute;
+        top: 40px;
+        left: -95px;
+        background-color: #b4b4b450;
+        backdrop-filter: blur(5px);
+        padding: 10px;
+        border: 1px solid #3498db;
+        border-radius: 5px;
+        box-shadow: 3px 5px 5px 5px rgba(0, 0, 0, 0.201);
+        }
+
+        .dropdown-content input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color: white;
+        border-radius: 5px;
+        border: 1px solid rgb(168, 168, 168);
+        }
+
+        .dropdown-content button {
+        padding: 8px 15px;
+        background-color: rgb(0, 154, 108);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 3px;
+        }
+
+        .custom-dropdown .dropdown-content .cls{
+            position: absolute;
+            right: -7px;
+            top: -7px;
+            padding: 3px 5px;
+            color: white;
+            text-shadow: 0px 0px 2px black ;
+            border-radius: 50%;
+            font-size: 15px;
+            background-color: rgba(255, 0, 0, 0.424);
+        }
+        .custom-dropdown .dropdown-content .title
+        {
+            background-color: rgb(255, 255, 255);
+            font-weight: 500;
+            color: rgb(0, 0, 0);
+            text-shadow: 0px 0px 20px rgb(255, 255, 255);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        /* tooltip */
+        .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted #ccc; /* Add a dotted underline for visual indication */
+        cursor: help; /* Change the cursor to a help cursor on hover */
+        }
+
+        .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+        }
+
+        .filter-option {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 1px;
+    }
+
+    #myTable tbody{
+        cursor: pointer;
+    }
+</style> 
+</style>
+
+<div class="body-wrapper">
+    <div class="container-fluid">
+
+
+       
+        <div class="col-sm-12 col-lg-12 " >
+            <div id="item_get_detail_target">
+                
+                <div class="row m-2" style="height:20%">
+                    <div class="card bg-light bs p-3 mb-3">
+                        <div class="card-group w-100 mx-auto d-block"> 
+                            <h2 style="color:red; text-align: center;">{{staff.company.company_name}}</h2>
+                        <h4 style="text-align: center;">Sales Report</h4>
+                        <h5 style="text-align: center;">
+                            <span id="s1date" style="color:black; text-align: center;"></span>
+                            <span id="e1date" style="color:black; text-align: center;"></span></h5>
+                        
+
+                        </div>
+                        <div class="bar d-flex justify-content-between">
+                            <div class=" card-group">
+                                <div class="px-2">
+                                    <label style="text-align:left ">From</label><br>
+                                    <input name="FromDate" class="inputdate form-control" type="date" id="in1">
+                                </div>
+                                <div class="px-2">
+                                    <label style="text-align:left ">To</label><br>
+                                    <input name="ToDate" class="inputdate form-control" type="date" id="in2">
+                                </div>
+                            </div>
+                            <div class=" card-group">
+                                <div class="right mt-3">
+                                    <a class="btn " title="export to excel"onclick="exportAsExcel()">
+                                        <span><img width="25px"src="{% static 'assets/excel2.png' %}" alt="no img"></span>
+                                    </a>
+                                    <a class="btn " title="export to PDF"onclick="exportAsPDF()">
+                                        <span><img width="25px"src="{% static 'images/PDF_icon.png' %}" alt="no img"></span>
+                                    </a>
+                                    <a class="btn  btn_print  " title="PRINT"onclick="()">
+                                        <span><img width="25px"src="{% static 'assets/printer1.png' %}" alt="no img"></span>
+                                    </a>
+                                    <a class="btn  p-0 ps-2" title="share">
+                                        <div class="btn-group dropleft">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa-solid fa-share"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <button type="button" class="btn " data-toggle="modal" data-target="#exampleModal">
+                                                    Share Via mail
+                                                  </button>
+                                                  <button type="button" class="btn " id="sendWhatsApp">
+                                                 {% post_to_whatsapp objects_or_url "whatsapp" %}
+                                                  </button>
+                                            </div>
+                                          </div>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-7" style="width: auto;" >
+                        <div class="d-flex">
+                            <div class="bg-success  p-3 m-3  mr-3 ml-3 fs-3" style="border-radius: 20px;">
+                                <p style="margin-bottom: 5px;"> Paid</p>
+                                <p style="font-size:large;"> <span id="paidval"></span></p>
+                            </div>
+                            <div class="text-dark pt-5" >
+                                <i class="fa fa-plus border-dark " aria-hidden="true" style="color: black;"></i>
+                            </div>
+                            <div class="bg-warning  p-3 m-3  mr-3 ml-3  fs-3" style="border-radius:20px;">
+                                <p style="margin-bottom: 5px;"> Unpaid</p>
+                                <p style="font-size:large;"><span id="unpaidval"></span></p>
+                            </div>
+                            <div class="text-dark pt-5">
+                                <i class="fa-solid fa fa-equals" style="color: black;"></i>
+                            </div>
+                            <div class="bg-secondary p-3 m-3 mr-3 ml-3  fs-3" style="border-radius:20px;">
+                                <p style="margin-bottom: 5px;"> Total</p>
+                                <p style="font-size:large;">  <span id="totalval"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Send template via mail</h5>
+                    
+                    </div>
+                    <div class="modal-body">
+                      <form method="post" action="{% url 'send_purchase_report_via_mail' %}"    id="email" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group" hidden>
+                            <label>From DATE</label>
+                            <input type="Date" name="fdate" id="fdate" class="form-control" value="{{a}}" >
+                        </div>
+                        <div class="form-group"  hidden>
+                            <label>To DATE</label>
+                            <input type="date" name="tdate" id="tdate" class="form-control" value="{{b}}">
+                        </div>
+                        <div class="form-group"  hidden>
+                            <label>Search by</label>
+                            <input type="text" name="search" id="search" class="form-control">
+                        </div>
+                        <div class="form-group"  hidden>
+                            <label>Filter By</label>
+                            <input type="text" name="filter" id="filter" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <lable>Mail id</lable>
+                            <textarea  name='email' required class="form-control" id="message"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <lable>Message</lable>
+                            <input type="text"  name="message" required class="form-control">
+                        </div>
+                        
+                        <button type="submit" class=" btn  btn-primary mx-auto d-block">Share</button>
+                      </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary "  data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+
+                        
+        <script>
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        // Check if the cookie name matches the CSRF cookie name
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            function uploadFile() {
+                const fileInput = document.getElementById("file-input");
+                const file = fileInput.files[0];
+                const csrfToken = getCookie('csrftoken')
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                fetch("/import_excel", {
+                    method: "POST",
+                    headers: { 'X-CSRFToken': csrfToken },
+                    body: formData
+                })
+                window.location.href = '/sale_order';
+
+
+            }
+        </script>
+            </div>
+<div class="row pt-0 m-0">
+    <div class="col " style="text-align: end; margin-right:30px;"> <a class="mr-12" href="{% url 'companyreport' %}" style="text-align: right; font-size:xx-large; color: black;">
+        <i class="fa fa-times mt-2" aria-hidden="true"></i>
+    </a></div>
+<div class="row pt-1 m-1" >
+    <div class="card p-1 bg-light bs mt-3">
+        <div class="row m-1 p-1 pt-3">
+            <div class="col-sm-10 col-lg-3">
+                <p class="tb fw-bolder pt-2">Sales Report</p>
+            </div>
+            <div class="col-sm-12 col-lg-3">
+                
+            </div>
+            
+            {% comment %} <div class="col-sm-10  pt-1"> {% endcomment %}
+                {% comment %} <div class="position-relative">
+                    <div class="position-absolute" style="margin-top:1rem; left: -28rem;">
+                        <span class="fa fa-search fs-5 text-info"></span>
+                        <input id="search_input1" class="w-100 border-secondary text-dark pt-1 pb-1 pe-1 rounded" type="text" placeholder="Search here..." >
+                    </div>
+                </div> {% endcomment %}
+                <div class="pt-2 d-flex justify-content-between ">
+                    <div class="position-relative">
+                        <div class="position-absolute" style="top: 50%; transform: translateY(-50%); left: 1rem;">
+                            <span class="fa fa-search fs-5 text-info"></span>
+                        </div>
+                        
+                            <input id="search_input1" style="padding-inline-start: 2rem;"
+                                class="w-100 border-secondary text-dark pt-1 pb-1 rounded " type="text"
+                                placeholder="Search here..">
+                        
+                   </div>
+                
+                    <!-- <div>
+                        <a style="color: white; height: 35px; width: 180px;"
+                           class="btn pt-2 btn-primary" href="{% url 'add_salesinvoice' %}">
+                           <i class="fa fa-plus border-dark" aria-hidden="true" style="color: white;"></i>&nbsp;&nbsp;Add Invoice
+                            
+                        </a>
+                    </div> -->
+                </div>
+                
+                <div class="" style="overflow-y: scroll;height: 50rem;">
+                    <table id="myTable" class="table table-bordered table-info table-striped tb table-responsive w-100" style="margin-top:40px;">
+                        <thead >
+                            <th class="hide_field no-export bg-secondary text-white" style="padding-right: 10px;">#</th>
+                            <th class="text-center fs-2 bg-secondary text-white" >
+                                <div class="heading-with-dropdown" >
+                                    <span style="margin-left: -10px;">DATE</span >
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown1()" style="margin-left: -12px;  width: 10px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd1">
+                                            <span onclick="toggleDropdown1()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd1_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input1()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick1()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown ">
+                                    <span style="white-space: nowrap; margin-left: -10px; ">INVOICE NO</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown2()" style="margin-left: -13px; width: 1px;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd2">
+                                            <span onclick="toggleDropdown2()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd2_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input2()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick2()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                          
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style="white-space: nowrap; margin-left: -10px;">PARTY NAME</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown3()" style="margin-left: -13px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd3">
+                                            <span onclick="toggleDropdown3()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd3_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input3()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick3()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style="margin-left: -10px;">TRANSACTION</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown4()" style="margin-left: -13px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd4">
+                                            <span onclick="toggleDropdown4()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd4_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input4()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick4()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style="white-space: nowrap; margin-left: -10px;">PAYMENT</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown5()" style="margin-left: -10px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd5">
+                                            <span onclick="toggleDropdown5()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd5_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input5()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick5()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style="margin-left: -10px;">AMOUNT</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown6()" style="margin-left: -13px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd6">
+                                            <span onclick="toggleDropdown6()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd6_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input6()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick6()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="text-center fs-2 bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style=" margin-left: -10px;">BALANCE</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown7()" style="margin-left: -12px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd7">
+                                            <span onclick="toggleDropdown7()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd7_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input7()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick7()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <!-- <th class="text-center fs-2 no-export bg-secondary text-white" style="padding-right: 10px;">
+                                <div class="heading-with-dropdown">
+                                    <span style="margin-left: -10px;">ACTION</span>
+                                    <div class="custom-dropdown">
+                                        <span class="fa fa-filter ps-1 fs-1" onclick="toggleDropdown8()" style="margin-left: -13px; width: 1px !important;color:black;"></span>
+                                        <div style="display: none;" class="dropdown-content dd8">
+                                            <span onclick="toggleDropdown8()" class="fa fa-times cls"></span>
+                                            <select class="filter-option">
+                                                <option value="exact-match" selected>Equal to</option>
+                                                
+                                            </select><br>
+                                            <input id="dd8_input" type="text" placeholder="Enter something...">
+                                            <div class="d-flex">
+                                                <button class="me-2 clear_0" onclick="clear_input8()">CLEAR</button>
+                                                <button class="sbmit_0" onclick="handleButtonClick8()">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th> -->
+                            <!-- 
+                                
+                             -->
+                            <!-- <th class="text-center p-0 m-0 no-export bg-secondary text-white" style="padding-right: 10px;"></th>  -->
+                        </thead>
+   
+                        <tbody>
+                            {% for c in company %}
+                                <tr class="sales-row">
+                                    <td class="text-center hide_field no-export" style="padding-top: 1.4rem;">
+                                        <div style="width: 10px;height: 10px;" >{{forloop.counter}}</div>
+                                    </td>                                                
+                                    <td class="text-center date-cell td_date clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{c.date|date:"Y-m-d"}}</td>
+                                    <td class="text-center td_invoice clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{c.invoice_no}}</td>
+                                    <td class="text-center td_name clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{c.party_name}}</td>
+                                    <td class="text-center td_transcation clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">Sale Invoice</td>
+                                    <td class="text-center td_payment clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{ c.paymenttype }}</td>
+                                    <td class="text-center td_amount clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{c.grandtotal}}</td>
+                                    <td class="text-center td_balance clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{ c.totalbalance }}</td>
+                                    <!-- <td class="text-center td_action no-export clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{ c.action }}</td>
+                                    <td class="text-center td_by no-export clickable-row" data-href="salesinvoice_billtemplate/{{ c.id }}">{{c.done_by_name}}</td> -->
+                                    <td class="text-center td_paidoff no-export " hidden >{{c.paidoff}}</td>
+                                    <!-- <td class="p-0 pt-1 m-0 no-export">
+                                      <div class="btn-group mb-1">
+                                            <button style="border: none;background: none;" type="button" class="ropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="fa fa-ellipsis-v text-dark fs-1 ps-"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li class="my-3">
+                                                    <a href="{% url 'salesinvoice_billtemplate' c.id  %}" style="color: black; padding-left: 10px;" class="hide_table_text_v"> <span class="fa fa-eye me-2 text-success"></span>  View</a></li> 
+                                                          
+                                              <li class="my-3">
+                                                 <a href="{% url 'edit_salesinvoice' c.id  %}" style="color: black; padding-left: 10px;" class="hide_table_text_e"><span class="fas fa-pencil-alt me-2 text-info"></span>Edit</a></li> 
+                                           </li>
+
+                                           <li class="my-3">
+                                            <a href="{% url 'deletesalesinvoice' c.id  %}" style="color: black; padding-left: 10px;" class="hide_table_text_d"> <span class="fa fa-trash-alt me-2 text-danger"></span>  Delete</a></li> 
+                                      </li>
+
+                                      <li class="my-3">
+                                        <a href="{% url 'salesinvoicehistory' c.id  %}" style="color: black; padding-left: 10px;" class="hide_table_text_h"> <span class="fa fa-history me-2 text-info"></span>  History</a></li> 
+                                  </li>
+                                            </ul>
+                                        </div> 
+                                    </td> -->
+                                </tr>
+                            {% endfor %}
+                           
+                        </tbody>
+                </table>
+            {% comment %} </div> {% endcomment %}
+        </div>
+    </div>
+</div>
+                                
+                                
+                                
+                               
+                            </thead>
+                            <tbody>
+                                {% for i in bill %}
+                                <tr>
+                                    <td>{{i.billdate|date:'Y-m-d'}}</td>
+                                    <td>{{i.billno}}</td>
+                                    <td>{{i.party.party_name}}</td>
+                                    <td>bill</td>
+                                    <td>{{i.pay_method}}</td>
+                                    <td>{{i.grandtotal}}</td>
+                                    <td>{{i.balance}}</td>
+                                   
+                                
+                                    
+                                    
+                                </tr>
+                                {% endfor %}
+                                {% for i in debit %}
+                                <tr>
+                                    <td>{{i.billdate}}</td>
+                                    <td>{{i.billno}}</td>
+                                    <td>{{i.party.party_name}}</td>
+                                    <td>debit note</td>
+                                    <td>{{i.payment_type}}</td>
+                                    <td>{{i.grandtotal}}</td>
+                                    <td>{{i.balance_amount}}</td>
+                                    
+                                    
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                    <div id="content" style="display:none;">
+                        <div id="content1">
+                            
+                       
+                        <h2 style="text-align: center; color:red;">{{staff.company.company_name}}</h2>
+                        <h4 style="text-align: center;">Purchase Report</h4>
+                        <h5 style="text-align: center;">
+                            <span id="sdate" style="color:black; text-align: center;"></span>
+                            <span id="edate" style="color:black; text-align: center;"></span></h5>
+                       
+                       
+                        <div class="row mt-7" style="width: auto;" >
+                            <div class="d-flex">
+                                <div class="bg-success  p-3 m-3  mr-3 ml-3 fs-3" style="border-radius: 20px;">
+                                    <p style="margin-bottom: 5px;"> Paid</p>
+                                    <p style="font-size:large;"> <span id="paidval1"></span></p>
+                                </div>
+                                <div class="text-dark pt-5" >
+                                    <i class="fa fa-plus border-dark " aria-hidden="true" style="color: black;"></i>
+                                </div>
+                                <div class="bg-warning  p-3 m-3  mr-3 ml-3  fs-3" style="border-radius:20px;">
+                                    <p style="margin-bottom: 5px;"> Unpaid</p>
+                                    <p style="font-size:large;"><span id="unpaidval1"></span></p>
+                                </div>
+                                <div class="text-dark pt-5">
+                                    <i class="fa-solid fa fa-equals" style="color: black;"></i>
+                                </div>
+                                <div class="bg-secondary p-3 m-3 mr-3 ml-3  fs-3" style="border-radius:20px;">
+                                    <p style="margin-bottom: 5px;"> Total</p>
+                                    <p style="font-size:large;">  <span id="totalval1"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <table class="table table-bordered" id="myTable1">
+                            <thead style="color: blue;">
+                                <th>DATE</th>
+                                <th>NUMBER</th>
+                                <th>PARTY NAME</th>
+                                <th>Type</th>
+                                <th>Payment Type</th>
+                                <th>Amount</th>
+                                <th>BALANCE</th>
+                            </thead>
+                            <tbody>
+                                {% for i in bill %}
+                                <tr>
+                                    <td style="width: auto;">{{i.billdate|date:'Y-m-d'}}</td>
+                                    <td>{{i.billno}}</td>
+                                    <td>{{i.party.party_name}}</td>
+                                    <td>bill</td>
+                                    <td>{{i.pay_method}}</td>
+                                    <td>{{i.grandtotal}}</td>
+                                    <td>{{i.balance}}</td>
+                                    
+                                </tr>
+                                {% endfor %}
+                                    {% for i in debit %}
+                                <tr>
+                                    <td style="width: auto;">{{i.billdate}}</td>
+                                    <td>{{i.billno}}</td>
+                                    <td>{{i.party.party_name}}</td>
+                                    <td>debit note</td>
+                                    <td>{{i.payment_type}}</td>
+                                    <td>{{i.grandtotal}}</td>
+                                    <td>{{i.balance_amount}}</td>
+
+                                    
+                                {% endfor %}
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+       
+             </div>
+    </div>
+   
+</div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    {% for msg in messages %}
+    swal({
+    title: "{{msg}}",
+    text: "{{msg.tags}}",
+    icon: "{{msg.tags}}",
+  });
+    {% endfor %}
+   </script>
+<script>
+    $(document).ready(function () {
+        $('.apply-filter').on('click', function () {
+            const $table = $('#myTable');
+            const columnIndex = $(this).closest('th').index();
+            var  filterValue = $(this).siblings('.filter-value').val().trim();
+            document.getElementById("filter").value =filterValue;
+            console.log("=============================+++++++++++++++");
+            console.log(filterValue)
+
+            $table.find('tbody tr').hide(); // Hide all rows
+            console.log("hide");
+            applyEqualToFilter($table, columnIndex, filterValue);
+           
+
+            // Close the filter dropdown
+            // $(this).closest('.filter-dropdown').hide();
+        });
+
+        function applyEqualToFilter($table, columnIndex, filterValue) {
+            console.log("filter");
+            $table.find(`tbody tr td:nth-child(${columnIndex + 1})`).each(function () {
+                const cellValue = $(this).text().trim();
+                if (cellValue === filterValue) {
+                    $(this).parent().show();
+                    console.log(this)
+                    
+                }
+            });
+        }
+
+        $('.clear-filter').on('click', function () {
+            $('#myTable tbody tr').show();
+            $(this).siblings('.filter-value').val('');
+
+            // Close the filter dropdown
+            // $(this).closest('.filter-dropdown').hide();
+        });
+
+        $('.apply-filter').on('click', function () {
+            const $table = $('#myTable1');
+            const columnIndex = $(this).closest('th').index();
+            const filterValue = $(this).siblings('.filter-value').val().trim();
+            console.log("=============================+++++++++++++++");
+            console.log(filterValue)
+
+            $table.find('tbody tr').hide(); // Hide all rows
+            console.log("hide");
+            applyEqualToFilter($table, columnIndex, filterValue);
+
+            // Close the filter dropdown
+            // $(this).closest('.filter-dropdown').hide();
+        });
+
+        function applyEqualToFilter($table, columnIndex, filterValue) {
+            console.log("filter");
+            $table.find(`tbody tr td:nth-child(${columnIndex + 1})`).each(function () {
+                const cellValue = $(this).text().trim();
+                if (cellValue === filterValue) {
+                    $(this).parent().show();
+                    console.log(this)
+                }
+            });
+            calculatetotal()
+        }
+
+        $('.clear-filter').on('click', function () {
+            $('#myTable tbody tr').show();
+            $(this).siblings('.filter-value').val('');
+            window.reload();
+            // Close the filter dropdown
+            // $(this).closest('.filter-dropdown').hide();
+        });
+
+    });
+</script>
+
+<script>
+// jQuery(document).ready(function ($) {
+//     $(".clickable-row").click(function () {
+//         window.location = $(this).data("href");
+//     });
+// });
+jQuery(document).ready(function ($) {
+    $("#search_input1").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        document.getElementById("search").value= value;
+        $("#myTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+        $("#myTable1 tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+          
+        });
+        calculatetotal()
+       
+    });
+   
+    $(document).on('click', '.btn_print', function (event) {
+    $('#myTable').removeClass('table-hover');
+    var printContents = $("#content").clone(); // Clone the content-div to avoid modifying the original content
+    printContents.find('.hideon-print').remove(); // Remove columns by class name
+
+    var $printerDiv = $('<div class="printContainer" id=printContainer></div>');
+    $printerDiv.html(printContents.html());
+    $('body').append($printerDiv).addClass("printingContent");
+    var h1Element = document.createElement("h1");
+    var head = document.getElementById("printContainer");
+    head.insertBefore(h1Element, head.firstChild);
+    window.print();
+    $printerDiv.remove();
+    $('body').removeClass("printingContent");
+
+    });
+   
+});
+
+var table = document.getElementById("myTable");
+var table2=document.getElementById("myTable1");
+var fromDate;
+var toDate;
+$('#in1').on('change', function () {
+    fromDate = $(this).val();
+    $('#in2').prop('min', function () {
+        return fromDate
+    });
+    var startDate = new Date(document.getElementById("in1").value);
+    var endDate = new Date(document.getElementById("in2").value);
+    var rows = table.getElementsByTagName("tr")
+    var prow=table2.getElementsByTagName("tr")
+
+    console.log(startDate);
+    document.getElementById("sdate").innerHTML =String(Date(startDate.toLocaleDateString())) +  ' TO ';
+    document.getElementById("s1date").innerHTML =String(startDate.toLocaleDateString()) + ' TO ';
+    ''
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var prow2 = prow[i];
+        var dateCell = row.cells[0];
+        var rowDate = new Date(dateCell.textContent);
+
+        if ((rowDate >= startDate) || (rowDate <= endDate && rowDate >= startDate)) {
+            row.style.display = "";
+            prow2.style.display ="";
+
+        } else {
+            row.style.display = "none";
+            prow2.style.display ="none";
+
+        }
+    }
+    calculatetotal()
+
+
+    // var tdate = new Date(fromDate)
+    // var options = { year: 'numeric', month: 'long', day: 'numeric' };
+    // document.getElementById("d1").innerHTML = tdate.toLocaleDateString(undefined, options);
+
+});
+
+$('#in2').on('change', function () {
+    toDate = $(this).val();
+    $('#in1').prop('max', function () {
+        return toDate
+    })
+    var startDate = new Date(document.getElementById("in1").value);
+    var endDate = new Date(document.getElementById("in2").value);
+    var rows = table.getElementsByTagName("tr");
+    var prow =table2.getElementsByTagName("tr")
+    document.getElementById("edate").innerHTML = endDate.toLocaleDateString();
+    document.getElementById("e1date").innerHTML = endDate.toLocaleDateString();
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var prow2 =prow[i];
+        var dateCell = row.cells[0];
+        var rowDate = new Date(dateCell.textContent);
+        if (rowDate <= endDate && rowDate >= startDate) {
+            row.style.display = "";
+            prow2.style.display = "";
+
+        } else {
+            row.style.display = "none";
+            prow2.style.display = "none";
+
+        }
+    }
+    calculatetotal()
+    // var tdate = new Date(toDate)
+    // var options = { year: 'numeric', month: 'long', day: 'numeric' };
+    // document.getElementById("d2").innerHTML = "  To  " + tdate.toLocaleDateString(undefined, options);
+
+})
+
+function exportAsExcel() {
+    console.log("myTable1");
+    $('in1').prop
+    const table = document.getElementById('myTable1'); // Replace 'myTable' with your table's ID
+    const wb = XLSX.utils.table_to_book(table);
+
+    XLSX.writeFile(wb, 'purchasereport.xlsx');
+    location.reload();
+}
+</script>
+<script>
+     $(document).ready(function () {
+      $('#in1, #in2').change(function () {
+        $('#fdate').val($('#in1').val());
+        $('#tdate').val($('#in2').val());
+       
+      });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+<script>
+    function exportAsPDF() {
+    console.log("myTable1");
+
+    // Use the correct selector to get the element by ID
+    var element = document.getElementById('content1') 
+
+            var opt =
+            {
+                margin: 0.5,
+                filename: 'Purchase report' + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 4 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait', }
+            };
+            html2pdf().set(opt).from(element).save();
+            
+    
+}
+
+
+</script>
+<script>
+    calculatetotal()
+
+    function calculatetotal(){
+        var table = document.getElementById('myTable');
+        var rows = table.getElementsByTagName('tr');
+        tpaid = 0;
+        tunpaid = 0;
+        ttotal = 0; 
+        for (var i = 1; i < rows.length; i++) {
+            if(rows[i].style.display !='none'){
+
+                var ucells = rows[i].getElementsByTagName('td')[6];
+                var uamount = rows[i].getElementsByTagName('td')[3];
+                var uvalue = uamount.textContent || uamount.innerText;
+                var utextValue = ucells.textContent || ucells.innerText;
+                if(uvalue == 'bill'){
+                tunpaid += parseFloat(utextValue)
+                }
+                if(uvalue == 'debit note'){
+                tunpaid -= parseFloat(utextValue)
+                }
+               
+                var tcells = rows[i].getElementsByTagName('td')[5];
+                var uamount = rows[i].getElementsByTagName('td')[3];
+                var uvalue = uamount.textContent || uamount.innerText;
+                var ttextValue = tcells.textContent || tcells.innerText;
+                if(uvalue == 'bill'){
+                    ttotal += parseFloat(ttextValue)
+                }
+                if(uvalue == 'debit note'){
+                    ttotal -= parseFloat(ttextValue)
+                }
+               
+            }
+        }
+        document.getElementById('paidval').textContent = ttotal-tunpaid
+        document.getElementById('unpaidval').textContent = tunpaid
+        document.getElementById('totalval').textContent = ttotal
+        document.getElementById('paidval1').textContent = ttotal-tunpaid
+        document.getElementById('unpaidval1').textContent = tunpaid
+        document.getElementById('totalval1').textContent = ttotal
+    }
+</script>
+<script>
+    // custom dropdown1
+    function toggleDropdown1() 
+    {
+        var dropdownContent = document.querySelector('.dd1');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick1() 
+    {
+        var inputValue = $('#dd1_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_date').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                $(this).hide()
+            }
+        })
+        toggleDropdown1();
+    }
+    function clear_input1()
+    {
+        $('#dd1_input').val('')
+    }
+    // custom dropdown2
+    function toggleDropdown2() 
+    {
+        var dropdownContent = document.querySelector('.dd2');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick2() 
+    {
+        var inputValue = $('#dd2_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_invoice').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                // alert($(this).find('.td_name').text().toLocaleLowerCase(),inputValue)
+                $(this).hide()
+            }
+        })
+        toggleDropdown2();
+    }
+    function clear_input2()
+    {
+        $('#dd2_input').val('')
+    }
+    // custom dropdown3
+    function toggleDropdown3() 
+    {
+        var dropdownContent = document.querySelector('.dd3');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick3() 
+    {
+        var inputValue = $('#dd3_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_name').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                // alert($(this).find('.td_name').text().toLocaleLowerCase(),inputValue)
+                $(this).hide()
+            }
+        })
+        toggleDropdown3();
+    }
+    function clear_input3()
+    {
+        $('#dd3_input').val('')
+    }
+    // custom dropdown4
+    function toggleDropdown4() 
+    {
+        var dropdownContent = document.querySelector('.dd4');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick4() 
+    {
+        var inputValue = $('#dd4_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_transcation').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                // alert($(this).find('.td_name').text().toLocaleLowerCase(),inputValue)
+                $(this).hide()
+            }
+        })
+        toggleDropdown4();
+    }
+    function clear_input4()
+    {
+        $('#dd4_input').val('')
+    }
+    // custom dropdown5
+    function toggleDropdown5() 
+    {
+        var dropdownContent = document.querySelector('.dd5');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick5() 
+    {
+        var inputValue = $('#dd5_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_payment').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                // alert($(this).find('.td_name').text().toLocaleLowerCase(),inputValue)
+                $(this).hide()
+            }
+        })
+        toggleDropdown5();
+    }
+    function clear_input5()
+    {
+        $('#dd5_input').val('')
+    }
+    // custom dropdow6
+    function toggleDropdown6() 
+    {
+        var dropdownContent = document.querySelector('.dd6');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick6() 
+    {
+        var inputValue = $('#dd6_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_amount').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                $(this).hide()
+            }
+        })
+        toggleDropdown6();
+    }
+    function clear_input6()
+    {
+        $('#dd6_input').val('')
+    }
+    // custom dropdow7
+    function toggleDropdown7() 
+    {
+        var dropdownContent = document.querySelector('.dd7');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick7() 
+    {
+        var inputValue = $('#dd7_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_balance').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                $(this).hide()
+            }
+        })
+        toggleDropdown7();
+    }
+    function clear_input7()
+    {
+        $('#dd7_input').val('')
+    }
+    // custom dropdow8
+    function toggleDropdown8() 
+    {
+        var dropdownContent = document.querySelector('.dd8');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick8() 
+    {
+        var inputValue = $('#dd8_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_action').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                $(this).hide()
+            }
+        })
+        toggleDropdown8();
+    }
+    function clear_input8()
+    {
+        $('#dd8_input').val('')
+    }
+    // custom dropdow9
+    function toggleDropdown9() 
+    {
+        var dropdownContent = document.querySelector('.dd9');
+        dropdownContent.style.display = dropdownContent.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function handleButtonClick9() 
+    {
+        var inputValue = $('#dd9_input').val().toLowerCase();
+        $('#myTable tbody tr').each(function(){
+            if($(this).find('.td_by').text().toLocaleLowerCase().indexOf(inputValue)>-1)
+            {
+                $(this).show()
+            }
+            else{
+                $(this).hide()
+            }
+        })
+        toggleDropdown9();
+    }
+    function clear_input9()
+    {
+        $('#dd9_input').val('')
+    }
+    // bootstrap tooltip
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    </script>
+{% endblock %}
