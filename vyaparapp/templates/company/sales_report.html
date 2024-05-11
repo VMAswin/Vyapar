@@ -226,11 +226,11 @@
                             <div class=" card-group">
                                 <div class="px-2">
                                     <label style="text-align:left ">From</label><br>
-                                    <input name="FromDate" class="inputdate form-control" type="date" id="in1">
+                                    <input name="FromDate" class="inputdate form-control" type="date" id="fromDate" onchange="filterDates()">
                                 </div>
                                 <div class="px-2">
                                     <label style="text-align:left ">To</label><br>
-                                    <input name="ToDate" class="inputdate form-control" type="date" id="in2">
+                                    <input name="ToDate" class="inputdate form-control" type="date" id="toDate" onchange="filterDates()">
                                 </div>
                             </div>
                             <div class=" card-group">
@@ -300,7 +300,7 @@
                     
                     </div>
                     <div class="modal-body">
-                      <form method="post" action="{% url 'send_purchase_report_via_mail' %}"    id="email" enctype="multipart/form-data">
+                      <form method="post" action="{% url 'send_sales_report_via_mail' %}"    id="email" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group" hidden>
                             <label>From DATE</label>
@@ -646,22 +646,22 @@
                                
                             </thead>
                             <tbody>
-                                {% for i in bill %}
+                                {% for c in company %}
                                 <tr>
-                                    <td>{{i.billdate|date:'Y-m-d'}}</td>
-                                    <td>{{i.billno}}</td>
-                                    <td>{{i.party.party_name}}</td>
+                                    <td>{{c.date|date:'Y-m-d'}}</td>
+                                    <td>{{c.invoice_no}}</td>
+                                    <td>{{c.party_name}}</td>
                                     <td>bill</td>
-                                    <td>{{i.pay_method}}</td>
-                                    <td>{{i.grandtotal}}</td>
-                                    <td>{{i.balance}}</td>
+                                    <td>{{c.paymenttype}}</td>
+                                    <td>{{c.grandtotal}}</td>
+                                    <td>{{c.totalbalance}}</td>
                                    
                                 
                                     
                                     
                                 </tr>
                                 {% endfor %}
-                                {% for i in debit %}
+                                <!-- {% for i in debit %}
                                 <tr>
                                     <td>{{i.billdate}}</td>
                                     <td>{{i.billno}}</td>
@@ -672,7 +672,7 @@
                                     <td>{{i.balance_amount}}</td>
                                     
                                     
-                                {% endfor %}
+                                {% endfor %} -->
 
 
                             </tbody>
@@ -685,7 +685,8 @@
                             
                        
                         <h2 style="text-align: center; color:red;">{{staff.company.company_name}}</h2>
-                        <h4 style="text-align: center;">Purchase Report</h4>
+
+                        <h4 style="text-align: center;">Sales Report</h4>
                         <h5 style="text-align: center;">
                             <span id="sdate" style="color:black; text-align: center;"></span>
                             <span id="edate" style="color:black; text-align: center;"></span></h5>
@@ -891,81 +892,49 @@ jQuery(document).ready(function ($) {
    
 });
 
-var table = document.getElementById("myTable");
-var table2=document.getElementById("myTable1");
-var fromDate;
-var toDate;
-$('#in1').on('change', function () {
-    fromDate = $(this).val();
-    $('#in2').prop('min', function () {
-        return fromDate
-    });
-    var startDate = new Date(document.getElementById("in1").value);
-    var endDate = new Date(document.getElementById("in2").value);
-    var rows = table.getElementsByTagName("tr")
-    var prow=table2.getElementsByTagName("tr")
+function filterDates() {
+        var fromDate = document.getElementById("fromDate").value;
+        var selectedDate = fromDate ? new Date(fromDate) : null;
 
-    console.log(startDate);
-    document.getElementById("sdate").innerHTML =String(Date(startDate.toLocaleDateString())) +  ' TO ';
-    document.getElementById("s1date").innerHTML =String(startDate.toLocaleDateString()) + ' TO ';
-    ''
-    for (var i = 1; i < rows.length; i++) {
-        var row = rows[i];
-        var prow2 = prow[i];
-        var dateCell = row.cells[0];
-        var rowDate = new Date(dateCell.textContent);
-
-        if ((rowDate >= startDate) || (rowDate <= endDate && rowDate >= startDate)) {
-            row.style.display = "";
-            prow2.style.display ="";
-
-        } else {
-            row.style.display = "none";
-            prow2.style.display ="none";
-
+        if (selectedDate) {
+            selectedDate.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
         }
-    }
-    calculatetotal()
 
+        var toDateInput = document.getElementById("toDate"); // Add this line to define toDateInput
+        var toDate = toDateInput.value;
+        
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        var emptyMessage = document.getElementById('emptyMessage');
+        var isEmpty = true;
 
-    // var tdate = new Date(fromDate)
-    // var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    // document.getElementById("d1").innerHTML = tdate.toLocaleDateString(undefined, options);
-
-});
-
-$('#in2').on('change', function () {
-    toDate = $(this).val();
-    $('#in1').prop('max', function () {
-        return toDate
-    })
-    var startDate = new Date(document.getElementById("in1").value);
-    var endDate = new Date(document.getElementById("in2").value);
-    var rows = table.getElementsByTagName("tr");
-    var prow =table2.getElementsByTagName("tr")
-    document.getElementById("edate").innerHTML = endDate.toLocaleDateString();
-    document.getElementById("e1date").innerHTML = endDate.toLocaleDateString();
-    for (var i = 1; i < rows.length; i++) {
-        var row = rows[i];
-        var prow2 =prow[i];
-        var dateCell = row.cells[0];
-        var rowDate = new Date(dateCell.textContent);
-        if (rowDate <= endDate && rowDate >= startDate) {
-            row.style.display = "";
-            prow2.style.display = "";
-
+        if (fromDate) {
+            toDateInput.min = fromDate;
         } else {
-            row.style.display = "none";
-            prow2.style.display = "none";
-
+            // Reset the minimum date if "From Date" is not selected
+            toDateInput.min = "";
         }
-    }
-    calculatetotal()
-    // var tdate = new Date(toDate)
-    // var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    // document.getElementById("d2").innerHTML = "  To  " + tdate.toLocaleDateString(undefined, options);
 
-})
+        for (var i = 1; i < rows.length; i++) {
+            var currentDate = rows[i].getElementsByTagName("td")[1].innerText; // Assuming the date is in the second column (index 1)
+            var date = new Date(currentDate.replace(/(\d{2})-(\d{2})-(\d{4})/, "$2/$1/$3"));
+            date.setHours(0, 0, 0, 0);
+
+            if ((fromDate && date >= selectedDate) || !fromDate) {
+                if ((toDate && date <= new Date(toDate)) || !toDate) {
+                    rows[i].style.display = "table-row";
+                    isEmpty = false;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+
+        emptyMessage.style.display = isEmpty ? 'block' : 'none';
+    }
+    
 
 function exportAsExcel() {
     console.log(myTable);
@@ -1011,49 +980,50 @@ function exportAsExcel() {
 
 
 </script>
-<script>
-    calculatetotal()
+{% comment %} <script>
 
-    function calculatetotal(){
-        var table = document.getElementById('myTable');
-        var rows = table.getElementsByTagName('tr');
-        tpaid = 0;
-        tunpaid = 0;
-        ttotal = 0; 
-        for (var i = 1; i < rows.length; i++) {
-            if(rows[i].style.display !='none'){
-
-                var ucells = rows[i].getElementsByTagName('td')[6];
-                var uamount = rows[i].getElementsByTagName('td')[3];
-                var uvalue = uamount.textContent || uamount.innerText;
-                var utextValue = ucells.textContent || ucells.innerText;
-                if(uvalue == 'bill'){
-                tunpaid += parseFloat(utextValue)
-                }
-                if(uvalue == 'debit note'){
-                tunpaid -= parseFloat(utextValue)
-                }
-               
-                var tcells = rows[i].getElementsByTagName('td')[5];
-                var uamount = rows[i].getElementsByTagName('td')[3];
-                var uvalue = uamount.textContent || uamount.innerText;
-                var ttextValue = tcells.textContent || tcells.innerText;
-                if(uvalue == 'bill'){
-                    ttotal += parseFloat(ttextValue)
-                }
-                if(uvalue == 'debit note'){
-                    ttotal -= parseFloat(ttextValue)
-                }
-               
+    function updateTotalBalance() {
+        $.ajax({
+            url: '/sales_get_total_balance/', 
+            type: 'GET',
+            success: function(data) {
+                $('#total-balance').text('₹' + data.total_balance);
+                $('#total-paidoff').text('₹' + data.paid_off);
+                $('#grand_total').text('₹' + data.grand_total);
+            },
+            error: function(error) {
+                console.log('Error fetching total balance:', error);
             }
-        }
-        document.getElementById('paidval').textContent = ttotal-tunpaid
-        document.getElementById('unpaidval').textContent = tunpaid
-        document.getElementById('totalval').textContent = ttotal
-        document.getElementById('paidval1').textContent = ttotal-tunpaid
-        document.getElementById('unpaidval1').textContent = tunpaid
-        document.getElementById('totalval1').textContent = ttotal
+        });
     }
+    updateTotalBalance();
+</script> {% endcomment %}
+<script>
+   calculatetotal()
+
+function calculatetotal() {
+    var table = document.getElementById('myTable');
+    var rows = table.getElementsByTagName('tr');
+    var tpaid = 0;
+    var tunpaid = 0;
+    var ttotal = 0;
+
+    for (var i = 1; i < rows.length; i++) {
+        if (rows[i].style.display != 'none') {
+            var paidCell = rows[i].querySelector('.td_paidoff'); 
+            var unpaidCell = rows[i].querySelector('.td_balance'); 
+            var totalCell = rows[i].querySelector('.td_amount'); 
+
+            tpaid += parseFloat(paidCell.textContent) || 0;
+            tunpaid += parseFloat(unpaidCell.textContent) || 0;
+            ttotal += parseFloat(totalCell.textContent) || 0;
+        }
+    }
+
+    document.getElementById('paidval').textContent = tpaid.toFixed(2);
+    document.getElementById('unpaidval').textContent = tunpaid.toFixed(2);
+    document.getElementById('totalval').textContent = ttotal.toFixed(2);
+}
 </script>
 <script>
     // custom dropdown1
