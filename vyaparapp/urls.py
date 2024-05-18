@@ -541,9 +541,9 @@ urlpatterns = [
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     #Aswin vm
-    path('sales_report',views.sales_report,name='sales_report'),
-    path('sales_get_total_balance',views.sales_get_total_balance,name='sales_get_total_balance'),
+    path('sales_invoice_report',views.sales_invoice_report,name='sales_invoice_report'),
     path('send_sales_report_via_mail',views.send_sales_report_via_mail,name='send_sales_report_via_mail'),
+    path('graph_sales',views.graph_sales,name='graph_sales'),
     
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
